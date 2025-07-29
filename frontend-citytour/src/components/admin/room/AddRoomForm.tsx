@@ -17,6 +17,8 @@ import routes from "@/routes/routes";
 import { useNavigate } from "react-router-dom";
 import ImageUpload from "@/components/admin/image/ImageUpload";
 import ThumbnailUpload from "@/components/admin/image/ThumbnailUpload";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { roomSchema } from "@/validations/roomSchema";
 
 const cruiseFeatures = [
     "Nhìn ra biển",
@@ -40,7 +42,10 @@ const AddRoomForm = () => {
         control,
         handleSubmit,
         setValue,
-    } = useForm<IRoom>({});
+        formState: { errors }
+    } = useForm<IRoom>({
+        resolver: zodResolver(roomSchema)
+    });
 
     const [imagePreview, setImagePreview] = useState("");
     const [thumbnailPreviews, setThumbnailPreviews] = useState<string[]>([]);
@@ -123,6 +128,9 @@ const AddRoomForm = () => {
                                     {...register("name")}
                                     placeholder="Phòng Deluxe"
                                 />
+                                <span className="text-sm text-red-400">
+                                    {errors.name?.message}
+                                </span>
                             </div>
                             <div className="col-span-3">
                                 <Label>Du thuyền</Label>
@@ -144,7 +152,9 @@ const AddRoomForm = () => {
                                         </Select>
                                     )}
                                 />
-
+                                <span className="text-sm text-red-400">
+                                    {errors.cruise_id?.message}
+                                </span>
                             </div>
                             <div className="col-span-3">
                                 <Label>Slug URL</Label>
@@ -160,14 +170,23 @@ const AddRoomForm = () => {
                             <div className="col-span-3">
                                 <Label>Giá cơ bản</Label>
                                 <Input type="number" {...register("price")} placeholder="10000000" />
+                                <span className="text-sm text-red-400">
+                                    {errors.price?.message}
+                                </span>
                             </div>
                             <div className="col-span-3">
                                 <Label>Diện tích</Label>
                                 <Input {...register("area")} placeholder="Diện tích" />
+                                <span className="text-sm text-red-400">
+                                    {errors.area?.message}
+                                </span>
                             </div>
                             <div className="col-span-3">
                                 <Label>Số khách tối đa</Label>
                                 <Input {...register("max_guests")} placeholder="3" />
+                                <span className="text-sm text-red-400">
+                                    {errors.max_guests?.message}
+                                </span>
                             </div>
                             <div className="col-span-3">
                                 <Label>Trạng thái</Label>
@@ -187,6 +206,9 @@ const AddRoomForm = () => {
                                         </Select>
                                     )}
                                 />
+                                <span className="text-sm text-red-400">
+                                    {errors.status?.message}
+                                </span>
                             </div>
                         </div>
                         <div className="grid grid-cols-2 gap-5">

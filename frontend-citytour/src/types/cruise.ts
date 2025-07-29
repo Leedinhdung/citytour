@@ -7,8 +7,7 @@ export interface ICruise {
 	stars: number;
 	base_price: number;
 	trip: string;
-	launch_year: string;
-	length: string;
+	launch_year: number;
 	cabin_count: number;
 	description: string;
 	introduction: string;
