@@ -7,7 +7,7 @@ const RoomSchema = new mongoose.Schema({
 		required: true,
 	},
 	name: { type: String, required: true },
-	slug: { type: String, required: true },
+	slug: { type: String, required: true, unique: true },
 	price: { type: Number, required: true },
 	area: { type: Number, required: true },
 	features: { type: [String], required: true },

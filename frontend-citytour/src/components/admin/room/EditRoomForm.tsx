@@ -1,45 +1,39 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import { generateSlug } from "@/utils/generateSlug";
-import { useGetAllCruises } from "@/hooks/admin/cruise/useCruise";
 import UploadCloudinary from "@/utils/cloundinary";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useAddRoom } from "@/hooks/admin/room/useRoom";
+import { useGetAllCruises } from "@/hooks/admin/cruise/useCruise";
+import { useGetRoomBySlug, useUpdateRoom } from "@/hooks/admin/room/useRoom";
+import { useGetSlugParams } from "@/hooks/common/useGetSlugParams";
+
 import { IRoom } from "@/types/room";
 import routes from "@/routes/routes";
-import { useNavigate } from "react-router-dom";
-import ImageUpload from "@/components/admin/image/ImageUpload";
 import ThumbnailUpload from "@/components/admin/image/ThumbnailUpload";
+import ImageUpload from "@/components/admin/image/ImageUpload";
 
 const cruiseFeatures = [
-    "Nhìn ra biển",
-    "Ban công riêng",
-    "Bồn tắm riêng",
-    "Wifi miễn phí",
-    "Sạc điện thoại",
-    "Điều hòa",
-    "Tủ lạnh",
-    "Két an toàn",
-    "Smart TV"
+    "Nhìn ra biển", "Ban công riêng", "Bồn tắm riêng", "Wifi miễn phí",
+    "Sạc điện thoại", "Điều hòa", "Tủ lạnh", "Két an toàn", "Smart TV"
 ];
 
-const AddRoomForm = () => {
-    const navigate = useNavigate()
-    const { mutateAsync: addRoom } = useAddRoom()
-    const { data: cruisesData, isLoading } = useGetAllCruises()
+const EditRoomForm = () => {
+    const slug = useGetSlugParams("slug");
+    const navigate = useNavigate();
+    const { mutateAsync: updateRoom } = useUpdateRoom();
+    const { data: cruisesData, isLoading } = useGetAllCruises();
+    const { data: roomData } = useGetRoomBySlug(slug!);
+
     const {
-        register,
-        watch,
-        control,
-        handleSubmit,
-        setValue,
+        register, watch, control, handleSubmit, reset, setValue
     } = useForm<IRoom>({});
 
     const [imagePreview, setImagePreview] = useState("");
@@ -49,45 +43,50 @@ const AddRoomForm = () => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const thumbnailInputRef = useRef<HTMLInputElement>(null);
 
-    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const imageUrl = await UploadCloudinary(file);
-            console.log("Cloudinary URL:", imageUrl);
-            setImagePreview(imageUrl);
-            setValue("image", imageUrl);
+    useEffect(() => {
+        if (roomData) {
+            reset(roomData);
+            setImagePreview(roomData.image || "");
+            setThumbnailPreviews(roomData.thumbnail || []);
+            setSelectedFeatures(roomData.features || []);
         }
+    }, [roomData, reset]);
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const url = await UploadCloudinary(file);
+        setImagePreview(url);
+        setValue("image", url);
     };
+
+    const handleThumbnailUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if (!files || !files.length) return;
+
+        const urls = await Promise.all(Array.from(files).map(UploadCloudinary));
+        const updated = [...(watch("thumbnail") || []), ...urls];
+        setThumbnailPreviews(updated);
+        setValue("thumbnail", updated);
+    };
+
     const handleRemoveImage = () => {
         setImagePreview("");
         setValue("image", "");
         if (fileInputRef.current) fileInputRef.current.value = "";
     };
 
-    const handleThumbnailChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files;
-        if (files && files.length > 0) {
-            const urls: string[] = [];
-            for (const file of Array.from(files)) {
-                const url = await UploadCloudinary(file);
-                urls.push(url);
-            }
-            const updated = [...(watch("thumbnail") || []), ...urls];
-            setThumbnailPreviews(updated);
-            setValue("thumbnail", updated);
-        }
-    };
-
     const handleRemoveThumbnail = (url: string) => {
-        const updated = thumbnailPreviews.filter((img) => img !== url);
+        const updated = thumbnailPreviews.filter(img => img !== url);
         setThumbnailPreviews(updated);
         setValue("thumbnail", updated);
     };
 
-    const handleFeatureChange = (feature: string, checked: boolean) => {
+    const handleFeatureToggle = (feature: string, checked: boolean) => {
         const updated = checked
             ? [...selectedFeatures, feature]
-            : selectedFeatures.filter((f) => f !== feature);
+            : selectedFeatures.filter(f => f !== feature);
         setSelectedFeatures(updated);
         setValue("features", updated);
     };
@@ -95,34 +94,33 @@ const AddRoomForm = () => {
     const onSubmit = async (data: IRoom) => {
         data.slug = generateSlug(data.name || "");
         try {
-            await addRoom(data);
-            navigate(routes.roomList)
+            await updateRoom([slug!, data]);
+            navigate(routes.roomList);
         } catch (error) {
-            console.error("Error adding room:", error);
+            console.error("Error updating room:", error);
         }
     };
-    if (isLoading) return <div>...Loading</div>;
+
+    if (isLoading) return <div>Đang tải...</div>;
+
     return (
         <div className="mx-12 md:ml-56">
             <form onSubmit={handleSubmit(onSubmit)}>
                 <CardHeader className="flex justify-between items-center">
                     <div>
-                        <CardTitle className="text-xl font-semibold">Thêm phòng mới</CardTitle>
-                        <CardDescription>Điền thông tin cho phòng mới</CardDescription>
+                        <CardTitle className="text-xl font-semibold">Chỉnh sửa phòng</CardTitle>
+                        <CardDescription>Điền thông tin cần chỉnh sửa</CardDescription>
                     </div>
-                    <Button type="submit">Thêm phòng</Button>
+                    <Button type="submit">Cập nhật phòng</Button>
                 </CardHeader>
 
                 <CardContent>
                     <div className="grid gap-6">
-                        {/* Basic Info */}
+                        {/* Phần thông tin cơ bản */}
                         <div className="grid grid-cols-12 gap-5">
                             <div className="col-span-6">
                                 <Label>Tên phòng</Label>
-                                <Input
-                                    {...register("name")}
-                                    placeholder="Phòng Deluxe"
-                                />
+                                <Input {...register("name")} placeholder="Phòng Deluxe" />
                             </div>
                             <div className="col-span-3">
                                 <Label>Du thuyền</Label>
@@ -135,7 +133,7 @@ const AddRoomForm = () => {
                                                 <SelectValue placeholder="Chọn du thuyền" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {cruisesData?.map((cruise) => (
+                                                {cruisesData?.map(cruise => (
                                                     <SelectItem key={cruise._id} value={cruise._id}>
                                                         {cruise.name}
                                                     </SelectItem>
@@ -144,15 +142,10 @@ const AddRoomForm = () => {
                                         </Select>
                                     )}
                                 />
-
                             </div>
                             <div className="col-span-3">
                                 <Label>Slug URL</Label>
-                                <Input
-                                    id="slug"
-                                    value={generateSlug(watch("name") || "")}
-                                    readOnly
-                                />
+                                <Input value={generateSlug(watch("name") || "")} readOnly />
                             </div>
                         </div>
 
@@ -194,7 +187,7 @@ const AddRoomForm = () => {
                             <ImageUpload
                                 label="Ảnh đại diện"
                                 imageUrl={imagePreview}
-                                onUpload={handleImageChange}
+                                onUpload={handleImageUpload}
                                 onRemove={handleRemoveImage}
                                 inputRef={fileInputRef}
                             />
@@ -202,25 +195,23 @@ const AddRoomForm = () => {
                             {/* Thumbnail */}
                             <ThumbnailUpload
                                 thumbnails={thumbnailPreviews}
-                                onUpload={handleThumbnailChange}
+                                onUpload={handleThumbnailUpload}
                                 onRemove={handleRemoveThumbnail}
                                 inputRef={thumbnailInputRef}
                             />
                         </div>
-                        {/* Features & Schedule */}
+                        {/* Tiện ích */}
                         <div>
                             <Label>Tiện ích nổi bật</Label>
                             <div className="grid grid-cols-2 gap-2 mt-2">
-                                {cruiseFeatures.map((feature) => (
+                                {cruiseFeatures.map(feature => (
                                     <div key={feature} className="flex items-center space-x-2">
                                         <Checkbox
-                                            id={`feature-${feature}`}
+                                            id={feature}
                                             checked={selectedFeatures.includes(feature)}
-                                            onCheckedChange={(checked) => handleFeatureChange(feature, checked as boolean)}
+                                            onCheckedChange={(checked) => handleFeatureToggle(feature, checked as boolean)}
                                         />
-                                        <Label htmlFor={`feature-${feature}`} className="text-sm font-normal">
-                                            {feature}
-                                        </Label>
+                                        <Label htmlFor={feature} className="text-sm font-normal">{feature}</Label>
                                     </div>
                                 ))}
                             </div>
@@ -232,4 +223,4 @@ const AddRoomForm = () => {
     );
 };
 
-export default AddRoomForm;
+export default EditRoomForm;
