@@ -16,6 +16,8 @@ import { useAddCruise } from "@/hooks/admin/cruise/useCruise";
 import UploadCloudinary from "@/utils/cloundinary";
 import routes from "@/routes/routes";
 import { useNavigate } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { cruiseSchema } from "@/validations/cruiseSchema";
 
 const cruiseFeatures = [
     "Nhà hàng",
@@ -42,7 +44,10 @@ const AddCruiseForm = () => {
         watch,
         handleSubmit,
         setValue,
-    } = useForm<ICruise>({});
+        formState: { errors }
+    } = useForm<ICruise>({
+        resolver: zodResolver(cruiseSchema)
+    });
 
     const [imagePreview, setImagePreview] = useState("");
     const [bannerPreviews, setBannerPreviews] = useState<string[]>([]);
@@ -126,10 +131,16 @@ const AddCruiseForm = () => {
                                     {...register("name")}
                                     placeholder="Heritage Bình Chuẩn"
                                 />
+                                <span className="text-sm text-red-400">
+                                    {errors.name?.message}
+                                </span>
                             </div>
                             <div className="col-span-3">
                                 <Label>Vị trí</Label>
                                 <Input {...register("location")} placeholder="Cát Bà, Hải Phòng" />
+                                <span className="text-sm text-red-400">
+                                    {errors.location?.message}
+                                </span>
                             </div>
                             <div className="col-span-3">
                                 <Label>Số sao</Label>
@@ -140,6 +151,9 @@ const AddCruiseForm = () => {
                                     {...register("stars")}
                                     placeholder="5"
                                 />
+                                <span className="text-sm text-red-400">
+                                    {errors.stars?.message}
+                                </span>
                             </div>
                         </div>
 
@@ -155,14 +169,23 @@ const AddCruiseForm = () => {
                             <div className="col-span-3">
                                 <Label>Hãng vận hành</Label>
                                 <Input {...register("operator")} placeholder="Heritage Cruises" />
+                                <span className="text-sm text-red-400">
+                                    {errors.operator?.message}
+                                </span>
                             </div>
                             <div className="col-span-3">
                                 <Label>Giá cơ bản</Label>
                                 <Input type="number" {...register("base_price")} placeholder="10000000" />
+                                <span className="text-sm text-red-400">
+                                    {errors.base_price?.message}
+                                </span>
                             </div>
                             <div className="col-span-3">
                                 <Label>Hành trình</Label>
                                 <Input {...register("trip")} placeholder="Hành trình" />
+                                <span className="text-sm text-red-400">
+                                    {errors.trip?.message}
+                                </span>
                             </div>
                         </div>
 
@@ -170,10 +193,16 @@ const AddCruiseForm = () => {
                             <div className="col-span-3">
                                 <Label>Năm hạ thủy</Label>
                                 <Input {...register("launch_year")} placeholder="2019" />
+                                <span className="text-sm text-red-400">
+                                    {errors.launch_year?.message}
+                                </span>
                             </div>
                             <div className="col-span-3">
                                 <Label>Số lượng cabin</Label>
                                 <Input type="number" {...register("cabin_count")} placeholder="30" />
+                                <span className="text-sm text-red-400">
+                                    {errors.cabin_count?.message}
+                                </span>
                             </div>
                             <div className="col-span-3">
                                 <Label>Ngày bắt đầu</Label>
@@ -183,6 +212,9 @@ const AddCruiseForm = () => {
                                     className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
                                     placeholder="Chọn ngày"
                                 />
+                                <span className="text-sm text-red-400">
+                                    {errors.startDate?.message}
+                                </span>
                             </div>
                             <div className="col-span-3">
                                 <Label>Ngày kết thúc</Label>
@@ -192,6 +224,9 @@ const AddCruiseForm = () => {
                                     className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
                                     placeholder="Chọn ngày"
                                 />
+                                <span className="text-sm text-red-400">
+                                    {errors.endDate?.message}
+                                </span>
                             </div>
                         </div>
 
@@ -209,6 +244,9 @@ const AddCruiseForm = () => {
                                     }}
                                     onEditorChange={(content) => setValue("introduction", content)}
                                 />
+                                <span className="text-sm text-red-400">
+                                    {errors.introduction?.message}
+                                </span>
                             </div>
                             <div>
                                 <Label className="mb-2">Mô tả</Label>
@@ -222,6 +260,9 @@ const AddCruiseForm = () => {
                                     }}
                                     onEditorChange={(content) => setValue("description", content)}
                                 />
+                                <span className="text-sm text-red-400">
+                                    {errors.description?.message}
+                                </span>
                             </div>
                         </div>
 
@@ -255,6 +296,9 @@ const AddCruiseForm = () => {
                                         </Button>
                                         <span className="text-sm text-muted-foreground">JPG, PNG hoặc GIF tối đa 5MB</span>
                                     </div>
+                                    <span className="text-sm text-red-400">
+                                        {errors.thumbnail?.message}
+                                    </span>
                                 </div>
                             </div>
 
@@ -288,6 +332,9 @@ const AddCruiseForm = () => {
                                             <ImagePlus className="h-4 w-4 mr-1" /> Chọn ảnh banner
                                         </Button>
                                     </div>
+                                    <span className="text-sm text-red-400">
+                                        {errors.gallery?.message}
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -309,6 +356,9 @@ const AddCruiseForm = () => {
                                     </div>
                                 ))}
                             </div>
+                            <span className="text-sm text-red-400">
+                                    {errors.features?.message}
+                                </span>
                         </div>
                     </div>
                 </CardContent>
