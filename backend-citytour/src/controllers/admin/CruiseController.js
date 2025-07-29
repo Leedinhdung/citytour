@@ -1,4 +1,5 @@
 import cruisesSchema from "../../models/cruises.schema.js";
+import cruiseValidate from "../../validations/cruiseValidate.js";
 
 const handleError = (error, res, message) => {
 	console.error(message, error);
@@ -45,6 +46,13 @@ export const getListTrashCruises = async (req, res) => {
 };
 export const createCruise = async (req, res) => {
 	try {
+		const { error } = cruiseValidate.createCruiseSchema.validate(req.body);
+		if (error) {
+			return res.status(400).send({
+				message: error.details[0].message,
+				data: [],
+			});
+		}
 		const cruise = new cruisesSchema(req.body);
 		const result = await cruise.save();
 		res.status(201).send({
@@ -72,8 +80,15 @@ export const getCruiseBySlug = async (req, res) => {
 };
 export const updateCruiseBySlug = async (req, res) => {
 	try {
-		const slug = req.params;
-		const cruise = await cruisesSchema.findOneAndUpdate(slug, req.body, {
+		const { slug } = req.params;
+		const { error } = cruiseValidate.updateCruiseSchema.validate(req.body);
+		if (error) {
+			return res.status(400).send({
+				message: error.details[0].message,
+				data: [],
+			});
+		}
+		const cruise = await cruisesSchema.findOneAndUpdate({ slug }, req.body, {
 			new: true,
 		});
 		if (!cruise) {
