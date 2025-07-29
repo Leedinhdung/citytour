@@ -2,6 +2,8 @@ import AddCruiseForm from "@/components/admin/cruise/AddCruiseForm";
 import EditCruiseForm from "@/components/admin/cruise/EditCruiseForm";
 import TrashCruise from "@/components/admin/cruise/TrashCruise";
 import AddRoomForm from "@/components/admin/room/AddRoomForm";
+import EditRoomForm from "@/components/admin/room/EditRoomForm";
+import TrashRoom from "@/components/admin/room/TrashRoom";
 import AdminLayout from "@/layouts/admin/AdminLayout";
 import ClientLayout from "@/layouts/client/ClientLayout";
 import CruisesPage from "@/pages/admin/cruise/CruisePage";
@@ -24,4 +26,6 @@ export const adminRoutes = [
 	{ path: routes.trashCruise, layout: AdminLayout, element: TrashCruise },
 	{ path: routes.roomList, layout: AdminLayout, element: RoomPage },
 	{ path: routes.addRoom, layout: AdminLayout, element: AddRoomForm },
+	{ path: routes.editRoom, layout: AdminLayout, element: EditRoomForm },
+	{ path: routes.trashRoom, layout: AdminLayout, element: TrashRoom },
 ];

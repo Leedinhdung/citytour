@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Edit, Trash2, House, User, BedDouble } from "lucide-react"
 import { priceFormat } from "@/helpers/formatHelper"
-import { useGetAllRooms, useGetRoomCruiseSlug } from "@/hooks/admin/room/useRoom"
+import { useGetAllRooms, useGetRoomCruiseSlug, useSoftDeleteRoom } from "@/hooks/admin/room/useRoom"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useGetAllCruises } from "@/hooks/admin/cruise/useCruise"
 import { useNavigate } from "react-router-dom"
@@ -16,6 +16,11 @@ const RoomList = () => {
     const { data: roomData, isLoading } = useGetAllRooms()
     const { data: cruiseData } = useGetAllCruises()
     const { data: roomByCruise } = useGetRoomCruiseSlug(slug!)
+    const { mutateAsync: softDelete } = useSoftDeleteRoom()
+    
+    const handleSoftDelete = async (slug: string) => {
+        await softDelete(slug)
+    }
 
     const handleTabChange = (value: string) => {
         navigate(`?tab=${value}`)
@@ -31,7 +36,6 @@ const RoomList = () => {
                 ))}
             </TabsList>
 
-            {/* Tất cả phòng */}
             <TabsContent value="all">
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {roomData && roomData.map((room) => (
@@ -71,11 +75,11 @@ const RoomList = () => {
                             </CardContent>
 
                             <CardFooter className="flex justify-between">
-                                <Button variant="outline" size="sm">
-                                    <Edit onClick={() => navigate(routes.editCruise.replace(':slug', room.slug))} className="h-4 w-4 mr-2" />
+                                <Button onClick={() => navigate(routes.editRoom.replace(':slug', room.slug))} variant="outline" size="sm">
+                                    <Edit className="h-4 w-4 mr-2" />
                                     Sửa
                                 </Button>
-                                <Button variant="outline" size="sm" className="text-destructive">
+                                <Button onClick={() => handleSoftDelete(room.slug)} variant="outline" size="sm" className="text-destructive">
                                     <Trash2 className="h-4 w-4 mr-2" />
                                     Xóa
                                 </Button>
@@ -85,7 +89,6 @@ const RoomList = () => {
                 </div>
             </TabsContent>
 
-            {/* Theo từng du thuyền */}
             {cruiseData?.map((cruise) => (
                 <TabsContent key={cruise._id} value={cruise.slug}>
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -129,11 +132,11 @@ const RoomList = () => {
                                         </CardContent>
 
                                         <CardFooter className="flex justify-between">
-                                            <Button variant="outline" size="sm">
+                                            <Button onClick={() => navigate(routes.editRoom.replace(":slug", room.slug))} variant="outline" size="sm">
                                                 <Edit className="h-4 w-4 mr-2" />
                                                 Sửa
                                             </Button>
-                                            <Button variant="outline" size="sm" className="text-destructive">
+                                            <Button onClick={() => handleSoftDelete(room.slug)} variant="outline" size="sm" className="text-destructive">
                                                 <Trash2 className="h-4 w-4 mr-2" />
                                                 Xóa
                                             </Button>

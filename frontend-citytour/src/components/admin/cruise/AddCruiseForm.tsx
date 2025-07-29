@@ -57,7 +57,6 @@ const AddCruiseForm = () => {
         const file = e.target.files?.[0];
         if (file) {
             const imageUrl = await UploadCloudinary(file);
-            console.log("Cloudinary URL:", imageUrl);
             setImagePreview(imageUrl);
             setValue("thumbnail", imageUrl);
         }

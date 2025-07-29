@@ -27,6 +27,7 @@ export const useGetAllCruises = (
 		queryFn: cruiseApi.getAllCruises,
 	});
 };
+
 export const useGetListTrashCruises = (
 	options?: Omit<UseQueryOptions<ICruise[]>, "queryKey" | "queryFn">
 ) => {
@@ -36,6 +37,7 @@ export const useGetListTrashCruises = (
 		queryFn: cruiseApi.getListTrashCruises,
 	});
 };
+
 export const useGetCruiseBySlug = (
 	slug: string,
 	options?: Omit<UseQueryOptions<ICruise>, "queryKey" | "queryFn">

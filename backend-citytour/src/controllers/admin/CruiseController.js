@@ -13,7 +13,7 @@ export const getListCruises = async (req, res) => {
 			.find({ isDeleted: null })
 			.sort({ createdAt: -1 });
 		if (!cruises || cruises.length === 0) {
-			return res.status(404).send({
+			return res.status(200).send({
 				message: "Không tìm thấy du thuyền nào",
 			});
 		}
@@ -31,7 +31,7 @@ export const getListTrashCruises = async (req, res) => {
 			.find({ isDeleted: { $ne: null } })
 			.sort({ createdAt: -1 });
 		if (!cruises || cruises.length === 0) {
-			return res.status(404).send({
+			return res.status(200).send({
 				message: "Không tìm thấy du thuyền nào",
 			});
 		}
