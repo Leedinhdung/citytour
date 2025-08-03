@@ -1,7 +1,7 @@
 const routes = {
 	//CLIENT
 	home: "/",
-	detailTour: "/chi-tiet",
+	detaiCruise: "/chi-tiet/:slug",
 
 	//ADMIN
 	dashboard: "/quan-tri",
