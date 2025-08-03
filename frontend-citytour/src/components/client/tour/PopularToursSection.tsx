@@ -1,8 +1,10 @@
-import TourCard from "@/components/client/tour/TourCard";
+import CruiseCard from "@/components/client/tour/CruiseCard";
 import { Button } from "@/components/ui/button";
+import { useGetAllCruises } from "@/hooks/admin/cruise/useCruise";
 import { MoveRight } from "lucide-react";
 
 const PopularToursSection = () => {
+    const { data: cruiseData } = useGetAllCruises()
     return (
         <div className="max-w-screen-xl mx-auto">
             <div className="grid grid-cols-12 pt-44 pb-28">
@@ -18,8 +20,8 @@ const PopularToursSection = () => {
                 </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 justify-items-center">
-                {[...Array(6)].map((_, index) => (
-                    <TourCard key={index} />
+                {cruiseData && cruiseData.map((value, index) => (
+                    <CruiseCard key={index} cruise={value} />
                 ))}
                 <div className="col-span-full flex justify-center">
                     <Button variant="ghost" className="rounded-full border px-10 py-5 text-base">

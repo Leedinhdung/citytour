@@ -16,7 +16,7 @@ const Header = () => {
                         Trang chủ
                     </Link>
                     <Link to={routes.home} className="text-base font-medium">
-                        Tours
+                        Tìm du thuyền
                     </Link>
                     <Link to={routes.home} className="text-base font-medium">
                         Liên hệ

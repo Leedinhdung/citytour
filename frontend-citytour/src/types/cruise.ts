@@ -1,3 +1,5 @@
+import { IRoom } from "@/types/room";
+
 export interface ICruise {
 	_id: string;
 	name: string;
@@ -16,4 +18,7 @@ export interface ICruise {
 	location: string;
 	startDate: string;
 	endDate: string;
+}
+export interface ICruiseDetail extends ICruise {
+	rooms: IRoom[];
 }
