@@ -1,7 +1,7 @@
-import { useRef, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { Editor } from "@tinymce/tinymce-react";
-import { X, ImagePlus } from "lucide-react";
+import { ImagePlus, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,16 +10,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { api_key_tiny, tinyMCE } from "@/configs/tinyMCE";
-import { generateSlug } from "@/utils/generateSlug";
-import { ICruise } from "@/types/cruise";
-import { useGetCruiseBySlug, useUpdateCruise } from "@/hooks/admin/cruise/useCruise";
-import UploadCloudinary from "@/utils/cloundinary";
-import routes from "@/routes/routes";
-import { useNavigate } from "react-router-dom";
-import { useGetSlugParams } from "@/hooks/common/useGetSlugParams";
 import { formatDate } from "@/helpers/formatHelper";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useGetCruiseBySlug, useUpdateCruise } from "@/hooks/admin/cruise/useCruise";
+import { useGetSlugParams } from "@/hooks/common/useGetSlugParams";
+import routes from "@/routes/routes";
+import { ICruise } from "@/types/cruise";
+import UploadCloudinary from "@/utils/cloundinary";
+import { generateSlug } from "@/utils/generateSlug";
 import { cruiseSchema } from "@/validations/cruiseSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
 
 const cruiseFeatures = [
     "Nhà hàng",

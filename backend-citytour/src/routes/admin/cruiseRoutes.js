@@ -9,7 +9,7 @@ import {
 	updateCruiseBySlug,
 } from "../../controllers/admin/CruiseController.js";
 import express from "express";
-const router = express.Router();
+
 export default (router) => {
 	router.get("/quan-tri/du-thuyen", getListCruises);
 	router.get("/quan-tri/du-thuyen/thung-rac", getListTrashCruises);

@@ -1,10 +1,10 @@
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Edit, MapPin, Trash2, Ship, Sofa } from "lucide-react"
-import { useGetAllCruises, useSoftDeleteCruise } from "@/hooks/admin/cruise/useCruise"
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { priceFormat } from "@/helpers/formatHelper"
-import { useNavigate } from "react-router-dom"
+import { useGetAllCruises, useSoftDeleteCruise } from "@/hooks/admin/cruise/useCruise"
 import routes from "@/routes/routes"
+import { Edit, MapPin, Ship, Sofa, Trash2 } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
 const CruisesList = () => {
     const { data: cruisesData, isLoading } = useGetAllCruises()
