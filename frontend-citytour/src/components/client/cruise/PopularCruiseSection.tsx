@@ -1,9 +1,9 @@
-import CruiseCard from "@/components/client/tour/CruiseCard";
+import CruiseCard from "@/components/client/cruise/CruiseCard";
 import { Button } from "@/components/ui/button";
 import { useGetAllCruises } from "@/hooks/admin/cruise/useCruise";
 import { MoveRight } from "lucide-react";
 
-const PopularToursSection = () => {
+const PopularCruiseSection = () => {
     const { data: cruiseData } = useGetAllCruises()
     return (
         <div className="max-w-screen-xl mx-auto">
@@ -33,4 +33,4 @@ const PopularToursSection = () => {
     );
 };
 
-export default PopularToursSection;
+export default PopularCruiseSection;

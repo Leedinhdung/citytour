@@ -1,17 +1,19 @@
+import CruiseBookingForm from "@/components/client/cruise/CruiseBookingForm";
 import RoomDetailModal from "@/components/client/room/RoomDetailModal";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { priceFormat } from "@/helpers/formatHelper";
 
 import { useGetDetailCruise } from "@/hooks/client/detail/useDetail";
 import { useGetSlugParams } from "@/hooks/common/useGetSlugParams";
-import { Anchor, ArrowRight, BriefcaseBusiness, House, MapPinned, MoveLeft, MoveRight, Sofa, Star, User, X } from "lucide-react"
+import { Anchor, ArrowRight, BriefcaseBusiness, House, MapPinned, MoveLeft, MoveRight, Sofa, Star, User, X } from "lucide-react";
 import { useRef, useState } from "react";
 
-const DetailTour = () => {
+const DetailCruise = () => {
     const slug = useGetSlugParams('slug')
     const [currentIndex, setCurrentIndex] = useState(0);
     const [roomCount, setRoomCounts] = useState<{ [roomId: string]: number }>({});
+    const [isOpen, setIsOpen] = useState(false)
 
     const { data: cruise, isLoading } = useGetDetailCruise(slug!);
     const galleryLength = cruise?.gallery?.length || 0;
@@ -60,6 +62,12 @@ const DetailTour = () => {
         const count = roomCount[room._id] || 0;
         return total + room.price * count;
     }, 0) || 0;
+    const selectedRooms = cruise?.rooms
+        .filter((room) => roomCount[room._id] > 0)
+        .map((room) => ({
+            room,
+            count: roomCount[room._id],
+        })) || [];
 
     if (isLoading) return <div>...Loading</div>
     return (
@@ -319,7 +327,9 @@ const DetailTour = () => {
                                         <span>Tổng tiền:</span>
                                         <p className="text-lg font-medium text-[#0e4f4f]">{priceFormat(totalPrice)}</p>
                                     </div>
-                                    <Button className=" px-8 py-7 rounded-full" variant="outline">Đặt ngay <ArrowRight /></Button>
+                                    <Button onClick={() => setIsOpen(true)} className=" px-8 py-7 rounded-full" variant="outline" >Đặt ngay <ArrowRight /></Button>
+                                    <CruiseBookingForm open={isOpen} onOpenChange={setIsOpen} selectedRooms={selectedRooms}
+                                        cruise={cruise || null} />
                                 </div>
                             </div>
                         </div>
@@ -355,4 +365,4 @@ const DetailTour = () => {
         </div >
     )
 }
-export default DetailTour
+export default DetailCruise
