@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 const Header = () => {
     return (
-        <header className="fixed top-0 right-16 left-16 bg-white border-b border-b-gray-50 z-50">
+        <header className="fixed top-0 right-0 left-0 px-16 bg-white border-b border-b-gray-50 z-50">
             <div className="flex items-center justify-between p-4 border-b-gray-200">
                 <Link to={routes.home}>
                     <img src="https://mixivivu.com/_next/image?url=%2Fblack-logo.png&w=256&q=75" alt=""
@@ -15,7 +15,7 @@ const Header = () => {
                     <Link to={routes.home} className="text-base font-medium">
                         Trang chủ
                     </Link>
-                    <Link to={routes.home} className="text-base font-medium">
+                    <Link to={routes.allCruise} className="text-base font-medium">
                         Tìm du thuyền
                     </Link>
                     <Link to={routes.home} className="text-base font-medium">
