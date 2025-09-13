@@ -2,6 +2,7 @@ const routes = {
 	//CLIENT
 	home: "/",
 	detaiCruise: "/chi-tiet/:slug",
+	allCruise: "/tim-du-thuyen",
 
 	//ADMIN
 	dashboard: "/quan-tri",

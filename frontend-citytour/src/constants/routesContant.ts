@@ -10,6 +10,7 @@ import CruisesPage from "@/pages/admin/cruise/CruisePage";
 
 import Dashboard from "@/pages/admin/dashboard/Dashboard";
 import RoomPage from "@/pages/admin/room/RoomPage";
+import AllCruise from "@/pages/client/allCruise/AllCruise";
 import DetailTour from "@/pages/client/detailCruise/DetailCruise";
 import Home from "@/pages/client/home/Home";
 import routes from "@/routes/routes";
@@ -17,6 +18,7 @@ import routes from "@/routes/routes";
 export const clientRoutes = [
 	{ path: routes.home, layout: ClientLayout, element: Home },
 	{ path: routes.detaiCruise, layout: ClientLayout, element: DetailTour },
+	{ path: routes.allCruise, layout: ClientLayout, element: AllCruise },
 ];
 export const adminRoutes = [
 	{ path: routes.dashboard, layout: AdminLayout, element: Dashboard },
